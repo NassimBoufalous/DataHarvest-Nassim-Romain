@@ -1,0 +1,8 @@
+.venv/
+__pycache__/
+*.pyc
+
+# Note : output/ n'est PAS ignore ici, contrairement a la suggestion du sujet
+# (section 6). Le planning demande explicitement de committer les fichiers de
+# sortie generes pour les 5 sites ("feat: configs pour les 5 sites + fichiers
+# de sortie"), donc output/*.csv/*.db/*.json restent suivis par Git.

@@ -37,8 +37,11 @@ def test_sqlite_save_does_not_duplicate_same_url(tmp_path):
     assert second == 0
     assert store.count() == 2
 
-    with sqlite3.connect(path) as conn:
+    conn = sqlite3.connect(path)
+    try:
         rows = conn.execute("SELECT url FROM items").fetchall()
+    finally:
+        conn.close()
     assert len(rows) == 2
 
 

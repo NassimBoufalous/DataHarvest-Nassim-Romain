@@ -42,8 +42,11 @@ class Store:
         if self.backend == "sqlite":
             if not os.path.isfile(self.path) or not self._sqlite_table_exists():
                 return 0
-            with sqlite3.connect(self.path) as conn:
+            conn = sqlite3.connect(self.path)
+            try:
                 return conn.execute("SELECT COUNT(*) FROM items").fetchone()[0]
+            finally:
+                conn.close()
         return len(self._read_json())
 
     def export_to(self, other_backend: str, path: str) -> int:
@@ -96,11 +99,14 @@ class Store:
     # (ex: titre/prix/note pour un catalogue, nom/version/auteur pour pypi.org).
 
     def _sqlite_table_exists(self) -> bool:
-        with sqlite3.connect(self.path) as conn:
+        conn = sqlite3.connect(self.path)
+        try:
             row = conn.execute(
                 "SELECT name FROM sqlite_master WHERE type='table' AND name='items'"
             ).fetchone()
             return row is not None
+        finally:
+            conn.close()
 
     def _sqlite_columns(self, conn) -> set:
         return {row[1] for row in conn.execute("PRAGMA table_info(items)")}
@@ -131,7 +137,8 @@ class Store:
                     fields.append(key)
 
         inserted = 0
-        with sqlite3.connect(self.path) as conn:
+        conn = sqlite3.connect(self.path)
+        try:
             self._ensure_sqlite_schema(conn, fields)
             columns = sorted(self._sqlite_columns(conn) - {"id"})
             placeholders = ", ".join("?" for _ in columns)
@@ -144,6 +151,8 @@ class Store:
                 )
                 inserted += cur.rowcount
             conn.commit()
+        finally:
+            conn.close()
         return inserted
 
     # -- json -----------------------------------------------------------------
@@ -174,10 +183,13 @@ class Store:
         if self.backend == "sqlite":
             if not os.path.isfile(self.path) or not self._sqlite_table_exists():
                 return []
-            with sqlite3.connect(self.path) as conn:
+            conn = sqlite3.connect(self.path)
+            try:
                 conn.row_factory = sqlite3.Row
                 columns = sorted(self._sqlite_columns(conn) - {"id"})
                 column_list = ", ".join(f'"{c}"' for c in columns)
                 rows = conn.execute(f"SELECT {column_list} FROM items").fetchall()
                 return [dict(row) for row in rows]
+            finally:
+                conn.close()
         return self._read_json()

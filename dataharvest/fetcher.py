@@ -1,7 +1,6 @@
 # dataharvest/fetcher.py
 """Telechargement HTTP orchestrant la chaine de middlewares."""
 
-import random
 import time
 
 import requests
@@ -49,8 +48,7 @@ class Fetcher:
                     else (response.status_code == 429 or 500 <= response.status_code < 600)
                 )
                 if retry_needed and attempt < max_retries:
-                    delay = self._retry_mw.backoff_delay(attempt) if self._retry_mw else (2 ** attempt)
-                    time.sleep(delay)
+                    time.sleep(self._backoff_delay(attempt))
                     attempt += 1
                     continue
 
@@ -61,18 +59,21 @@ class Fetcher:
                 last_exc = e
                 if attempt >= max_retries:
                     break
-                delay = self._retry_mw.backoff_delay(attempt) if self._retry_mw else (2 ** attempt)
-                time.sleep(delay)
+                time.sleep(self._backoff_delay(attempt))
                 attempt += 1
 
         raise FetchError(
             f"Echec du fetch de {url} apres {max_retries} tentative(s) : {last_exc}"
         )
 
+    def _backoff_delay(self, attempt: int) -> float:
+        return self._retry_mw.backoff_delay(attempt) if self._retry_mw else (2 ** attempt)
+
     def fetch_all(self, urls: list) -> list:
+        """Fetche une liste d'URLs en respectant config.fetcher.delay entre chaque."""
         results = []
         for i, url in enumerate(urls):
             results.append(self.fetch(url))
             if i < len(urls) - 1:
-                time.sleep(random.uniform(2, 5))
+                time.sleep(self.config.fetcher.delay)
         return results

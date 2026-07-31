@@ -16,6 +16,7 @@ log = logging.getLogger("dataharvest")
 
 
 def cmd_crawl(args):
+    """Sous-commande `crawl` : lance Orchestrator.run() sur la config donnee."""
     try:
         config = Config(args.config)
     except (FileNotFoundError, ValueError) as e:
@@ -30,6 +31,7 @@ def cmd_crawl(args):
 
 
 def cmd_export(args):
+    """Sous-commande `export` : convertit un backend de stockage vers un autre."""
     src_path = getattr(args, "from")
     src_backend = _guess_backend(src_path)
     dst_backend = _guess_backend(args.to)
@@ -40,13 +42,14 @@ def cmd_export(args):
 
 
 def cmd_validate(args):
+    """Sous-commande `validate` : charge une config et affiche un resume sans scraper."""
     try:
         config = Config(args.config)
     except (FileNotFoundError, ValueError) as e:
         print(f"Config invalide : {e}")
         sys.exit(1)
 
-    print(f"Config valide : {config}")
+    print(f"Config valide : {args.config}")
     print(f"  url        : {config.url}")
     print(f"  selectors  : {list(config.selectors.keys())}")
     print(f"  fetcher    : delay={config.fetcher.delay}s retries={config.fetcher.retries}")

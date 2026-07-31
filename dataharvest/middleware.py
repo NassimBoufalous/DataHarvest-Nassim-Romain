@@ -1,10 +1,8 @@
 # dataharvest/middleware.py
 
-
 import logging
 import time
 from abc import ABC, abstractmethod
-from urllib.parse import urlparse
 
 log = logging.getLogger("dataharvest.middleware")
 
@@ -12,11 +10,11 @@ log = logging.getLogger("dataharvest.middleware")
 class BaseMiddleware(ABC):
     @abstractmethod
     def process_request(self, url: str, headers: dict) -> tuple:
-        "Retourne (url, headers) potentiellement modifies."
+        """Retourne (url, headers) potentiellement modifies."""
 
     @abstractmethod
     def process_response(self, response) -> object:
-        "Retourne la response potentiellement transformee."
+        """Retourne la response potentiellement transformee."""
 
 
 class LoggingMiddleware(BaseMiddleware):
@@ -34,7 +32,6 @@ class LoggingMiddleware(BaseMiddleware):
 
 
 class RetryMiddleware(BaseMiddleware):
-
 
     def __init__(self, config, base_delay: float = 1.0):
         self.max_retries = config.fetcher.retries

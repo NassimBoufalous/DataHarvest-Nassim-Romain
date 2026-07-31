@@ -20,8 +20,21 @@ class Orchestrator:
         self.validator = Validator(required_fields=["titre", "url"])
         self.store = Store(config.store.backend, config.store.path)
 
-    def run(self) -> dict:
+    def run(self, dry_run: bool = False) -> dict:
         start = time.perf_counter()
+
+        if dry_run:
+            html = self.fetcher.fetch(self.config.url)
+            items = self.pipeline.process(html)
+            for item in items:
+                print(item)
+            return self._build_report(
+                fetched=1,
+                valid=items,
+                rejected=[],
+                stored=0,
+                duree_secondes=time.perf_counter() - start,
+            )
 
         pages_scrapees = 0
         all_valid = []

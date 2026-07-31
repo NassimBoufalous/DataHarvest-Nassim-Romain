@@ -53,6 +53,13 @@ class Fetcher:
                     continue
 
                 response.raise_for_status()
+                # requests retombe sur ISO-8859-1 par defaut quand le serveur ne
+                # declare pas de charset dans Content-Type (ex: books.toscrape.com),
+                # meme si le contenu reel est en UTF-8 -- ce qui corrompt les
+                # caracteres non-ASCII (ex: £ devient Â£). On utilise l'encodage
+                # detecte par le contenu lui-meme dans ce cas.
+                if "charset" not in response.headers.get("Content-Type", "").lower():
+                    response.encoding = response.apparent_encoding
                 return response.text
 
             except requests.RequestException as e:

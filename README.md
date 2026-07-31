@@ -2,7 +2,7 @@
 
 Mini-framework de web scraping modulaire et configurable développé dans le cadre du projet final de Web Scraping du Mastère Développement, Data & IA (IPSSI Montpellier).
 
-Le projet permet de scraper différents sites HTML statatiques **sans modifier le code Python** : toute la configuration du scraping (URL, pagination, sélecteurs CSS, validation, stockage...) est définie dans un simple fichier YAML ou JSON.
+Le projet permet de scraper différents sites HTML statiques **sans modifier le code Python** : toute la configuration du scraping (URL, pagination, sélecteurs CSS, validation, stockage...) est définie dans un simple fichier YAML ou JSON.
 
 ---
 
@@ -225,7 +225,7 @@ pip install -r requirements.txt
 ## Lancer un scraping
 
 ```bash
-python -m dataharvest crawl --config configs/books.yaml
+python -m dataharvest crawl --config configs/site1.yaml
 ```
 
 ### Mode Dry Run
@@ -233,13 +233,13 @@ python -m dataharvest crawl --config configs/books.yaml
 Télécharge uniquement la première page, affiche les résultats sans les enregistrer.
 
 ```bash
-python -m dataharvest crawl --config configs/books.yaml --dry-run
+python -m dataharvest crawl --config configs/site1.yaml --dry-run
 ```
 
 ### Vérifier une configuration
 
 ```bash
-python -m dataharvest validate --config configs/books.yaml
+python -m dataharvest validate --config configs/site1.yaml
 ```
 
 ### Exporter un backend

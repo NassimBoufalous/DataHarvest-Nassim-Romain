@@ -1,0 +1,20 @@
+# Site 1 -- niveau 1 (*) -- catalogue e-commerce d'entrainement
+url: https://books.toscrape.com/catalogue/page-1.html
+pagination:
+  pattern: /catalogue/page-{n}.html
+  start: 1
+  max_pages: 3
+selectors:
+  titre: article.product_pod h3 a[title]
+  url: article.product_pod h3 a[title]
+  prix: article.product_pod p.price_color
+  disponibilite: article.product_pod p.instock.availability
+  note: article.product_pod p.star-rating[class]
+fetcher:
+  delay: 1.0
+  retries: 3
+  timeout: 15
+  user_agent: DataHarvest/1.0 (+r.pintre@gmail.com)
+store:
+  backend: sqlite
+  path: output/books.db

@@ -1,0 +1,19 @@
+# Site 2 -- niveau 1 (*) -- citations avec pagination /page/N/
+url: https://quotes.toscrape.com/page/1/
+pagination:
+  pattern: /page/{n}/
+  start: 1
+  max_pages: 3
+selectors:
+  titre: div.quote span.text
+  url: "div.quote a:not(.tag)"
+  auteur: div.quote small.author
+  tag: "div.quote div.tags a.tag:first-of-type"
+fetcher:
+  delay: 1.0
+  retries: 3
+  timeout: 15
+  user_agent: DataHarvest/1.0 (+r.pintre@gmail.com)
+store:
+  backend: csv
+  path: output/quotes.csv

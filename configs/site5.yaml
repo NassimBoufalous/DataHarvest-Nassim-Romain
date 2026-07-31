@@ -1,0 +1,23 @@
+# Site 5 -- niveau 4 (****) -- plateforme internationale, selecteurs complexes
+#
+# NOTE : robots.txt de news.ycombinator.com declare "Crawl-delay: 30" pour
+# tous les user-agents. delay est fixe a 30s pour le respecter (verifie via
+# https://news.ycombinator.com/robots.txt).
+url: https://news.ycombinator.com/news
+pagination:
+  pattern: /news?p={n}
+  start: 1
+  max_pages: 3
+selectors:
+  titre: "tr.athing span.titleline > a:first-child"
+  url: "tr.athing span.titleline > a:first-child"
+  score: td.subtext span.score
+  commentaires: "td.subtext span.subline > a:last-of-type"
+fetcher:
+  delay: 30
+  retries: 3
+  timeout: 15
+  user_agent: DataHarvest/1.0 (+r.pintre@gmail.com)
+store:
+  backend: csv
+  path: output/hackernews.csv

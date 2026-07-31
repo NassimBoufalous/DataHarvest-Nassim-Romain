@@ -1,0 +1,31 @@
+# Site 4 -- niveau 3 (***) -- media/actualites avec pagination
+#
+# NOTE 1 : le champ "categorie" du sujet (ex: .cat-links a) n'a pas d'equivalent
+# present sur TOUTES les cartes d'articles de la page d'accueil actuelle du
+# site (seuls 12 des 36 articles affichent une etiquette visible). Pour eviter
+# de desaligner les donnees (GenericPipeline associe les champs par position),
+# ce champ est volontairement omis ici -- voir README, section limites connues.
+#
+# NOTE 2 : la page d'accueil actuelle du site ne repond plus a /page/{n}/ par
+# un contenu different (verifie : /page/2/ et /page/3/ renvoient un statut 200
+# mais un contenu quasi identique a la page 1, sans lien de pagination visible
+# dans le HTML). Ce n'est plus une liste chronologique paginee mais une page
+# "magazine" mise en avant. max_pages est donc fixe a 1 pour ne pas produire
+# de fausses donnees dupliquees -- voir README, section limites connues.
+url: https://www.blogdumoderateur.com/
+pagination:
+  pattern: /page/{n}/
+  start: 1
+  max_pages: 1
+selectors:
+  titre: a.content-serp-card h3.entry-title
+  url: a.content-serp-card
+  date: a.content-serp-card time.entry-date[datetime]
+fetcher:
+  delay: 1.5
+  retries: 3
+  timeout: 15
+  user_agent: DataHarvest/1.0 (+r.pintre@gmail.com)
+store:
+  backend: sqlite
+  path: output/blogdumoderateur.db

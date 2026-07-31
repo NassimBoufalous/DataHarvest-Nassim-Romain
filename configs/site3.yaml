@@ -1,0 +1,27 @@
+# Site 3 -- niveau 2 (**) -- recherche de packages Python
+#
+# NOTE : depuis la redaction du sujet, pypi.org/search a mis en place une
+# protection anti-bot cote serveur (Fastly "Client Challenge" en JavaScript)
+# qui bloque toute requete faite avec `requests`, meme avec des en-tetes de
+# navigateur realistes. Les selecteurs ci-dessous sont bases sur la structure
+# HTML connue de la page (classes package-snippet__*) mais n'ont pas pu etre
+# valides en conditions reelles au moment du test -- voir README / rapport,
+# section "difficultes et retrospective".
+url: "https://pypi.org/search/?q=scraping&page=1"
+pagination:
+  pattern: "/search/?q=scraping&page={n}"
+  start: 1
+  max_pages: 3
+selectors:
+  titre: a.package-snippet span.package-snippet__name
+  url: a.package-snippet
+  version: a.package-snippet span.package-snippet__version
+  description: a.package-snippet p.package-snippet__description
+fetcher:
+  delay: 1.5
+  retries: 3
+  timeout: 15
+  user_agent: DataHarvest/1.0 (+r.pintre@gmail.com)
+store:
+  backend: json
+  path: output/pypi.json

@@ -1,0 +1,26 @@
+# Config d'exemple pour le test d'integration (section 5 du sujet).
+#
+# NOTE : les selecteurs de l'exemple donne dans le sujet (h2.post-title a,
+# .cat-links a) correspondent a une ancienne version du site. La structure
+# HTML actuelle est celle documentee dans configs/site4.yaml. "categorie"
+# est omis pour la meme raison que dans site4.yaml (champ pas toujours
+# aligne). La pagination /page/{n}/ ne change quasiment pas le contenu sur
+# ce site actuellement (voir NOTE 2 de site4.yaml) -- sans consequence ici
+# puisque le test ne verifie qu'un seuil minimal d'items stockes.
+url: https://www.blogdumoderateur.com/
+pagination:
+  pattern: /page/{n}/
+  start: 1
+  max_pages: 2
+selectors:
+  titre: a.content-serp-card h3.entry-title
+  url: a.content-serp-card
+  date: a.content-serp-card time.entry-date[datetime]
+fetcher:
+  delay: 1.5
+  retries: 3
+  timeout: 15
+  user_agent: DataHarvest/1.0 (+r.pintre@gmail.com)
+store:
+  backend: sqlite
+  path: output/articles.db
